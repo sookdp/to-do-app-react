@@ -1,11 +1,14 @@
 import Tasks from "./Tasks";
+import History from "./History";
 
 export default function SelectedProject({
   project,
   onDelete,
   onAddTask,
   onDeleteTask,
+  onRestoreTask,
   tasks,
+  accomplishTasks,
 }) {
   const formattedDate = new Date(project.dueDate).toLocaleDateString("fr-FR", {
     day: "numeric",
@@ -32,6 +35,7 @@ export default function SelectedProject({
         </p>
       </header>
       <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} />
+      <History accomplishTasks={accomplishTasks} onRestore={onRestoreTask}/>
     </div>
   );
 }

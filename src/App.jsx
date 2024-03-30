@@ -9,6 +9,7 @@ function App() {
     selectedProject: undefined,
     projects: [],
     tasks: [],
+    accomplishTasks:[],
   });
 
   function handleAddTask(text) {
@@ -28,9 +29,30 @@ function App() {
 
   function handleDeleteTask(id) {
     setProjectsState((prevState) => {
+      const taskToDelete = prevState.tasks.find((task) => task.id === id);
+      if (!taskToDelete) {
+        return prevState;
+      }
+
       return {
         ...prevState,
         tasks: prevState.tasks.filter((task) => task.id !== id),
+        accomplishTasks: [...prevState.accomplishTasks, taskToDelete],
+      };
+    });
+  }
+
+  function handleRestoreTask(id) {
+    setProjectsState((prevState) => {
+      const taskToRestore = prevState.accomplishTasks.find((task) => task.id === id);
+      if (!taskToRestore) {
+        return prevState;
+      }
+
+      return {
+        ...prevState,
+        tasks: [...prevState.tasks, taskToRestore],
+        accomplishTasks: prevState.accomplishTasks.filter((task) => task.id !== id),
       };
     });
   }
@@ -94,14 +116,17 @@ function App() {
   );
 
   let content = (
-    <SelectedProject
-      project={selectedProject}
-      onDelete={handleDeleteProject}
-      onAddTask={handleAddTask}
-      onDeleteTask={handleDeleteTask}
-      tasks={projectsState.tasks}
-    />
+      <SelectedProject
+          project={selectedProject}
+          onDelete={handleDeleteProject}
+          onAddTask={handleAddTask}
+          onDeleteTask={handleDeleteTask}
+          onRestoreTask={handleRestoreTask}
+          tasks={projectsState.tasks}
+          accomplishTasks={projectsState.accomplishTasks}
+      />
   );
+
 
   if (projectsState.selectedProjectId === null) {
     content = (
