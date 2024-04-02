@@ -9,6 +9,8 @@ export default function SelectedProject({
   onRestoreTask,
   tasks,
   accomplishTasks,
+  moveUp,
+  moveDown,
 }) {
   const formattedDate = new Date(project.dueDate).toLocaleDateString("fr-FR", {
     day: "numeric",
@@ -34,7 +36,7 @@ export default function SelectedProject({
           {project.description}
         </p>
       </header>
-      <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} />
+      <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} moveUp={moveUp} moveDown={moveDown}/>
       <History accomplishTasks={accomplishTasks} onRestore={onRestoreTask}/>
     </div>
   );

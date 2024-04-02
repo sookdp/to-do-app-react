@@ -140,6 +140,36 @@ function App() {
     });
   }
 
+  function moveUp(id) {
+    const index = projectsState.tasks.findIndex(task => task.id === id);
+    if (index === -1 || index === 0) return;
+
+    const updatedTasks = [...projectsState.tasks];
+    const temp = updatedTasks[index];
+    updatedTasks[index] = updatedTasks[index - 1];
+    updatedTasks[index - 1] = temp;
+
+    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
+
+    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+  }
+
+  function moveDown(id) {
+    const index = projectsState.tasks.findIndex(task => task.id === id);
+    if (index === -1 || index === projectsState.tasks.length - 1) return;
+
+    const updatedTasks = [...projectsState.tasks];
+    const temp = updatedTasks[index];
+    updatedTasks[index] = updatedTasks[index + 1];
+    updatedTasks[index + 1] = temp;
+
+    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
+
+    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+  }
+
+
+
   const selectedProject = projectsState.projects.find(
     (project) => project.id === projectsState.selectedProjectId,
   );
@@ -153,6 +183,8 @@ function App() {
           onRestoreTask={handleRestoreTask}
           tasks={projectsState.tasks}
           accomplishTasks={projectsState.accomplishTasks}
+          moveUp={moveUp}
+          moveDown={moveDown}
       />
   );
 
