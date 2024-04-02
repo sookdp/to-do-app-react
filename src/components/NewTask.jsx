@@ -5,9 +5,8 @@ import emojiLogo from "/src/assets/smile.png";
 
 export default function NewTask({ onAdd }) {
   const [enteredTask, setEnteredTask] = useState("");
-
-    const [chosenEmoji, setChosenEmoji] = useState(false);
-    const [selectedEmoji, setSelectedEmoji] = useState(null);
+  const [chosenEmoji, setChosenEmoji] = useState(false);
+  const [selectedEmoji, setSelectedEmoji] = useState(null);
 
   function handleChange(event) {
     setEnteredTask(event.target.value);

@@ -2,12 +2,12 @@ export default function History({accomplishTasks, onRestore}) {
     return(
         <div>
             <header>
-                <h2 className="text-2xl font-bold text-stone-700 mb-4">Accomplish tasks</h2>
+                <h2 className="text-2xl font-bold text-stone-700 mb-4">Accomplished tasks</h2>
             </header>
             <section>
                 {accomplishTasks.length === 0 && (
                     <p className="text-stone-800 my-4">
-                        This project does not have any accomplish task
+                        This project does not have any accomplished task
                     </p>
                 )}
                 {accomplishTasks.length > 0 && (

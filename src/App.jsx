@@ -11,6 +11,7 @@ function App() {
     tasks: [],
     accomplishTasks:[],
   });
+  const [taskState, setTaskState] = useState(false);
 
   function handleAddTask(text) {
     setProjectsState((prevState) => {
@@ -34,6 +35,7 @@ function App() {
         return prevState;
       }
 
+      setTaskState(!taskState);
       return {
         ...prevState,
         tasks: prevState.tasks.filter((task) => task.id !== id),
