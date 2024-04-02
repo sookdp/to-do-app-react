@@ -14,7 +14,7 @@ export default function History({accomplishTasks, onRestore}) {
                     <ul className="p-4 mt-8 rounded-md bg-stone-100">
                         {accomplishTasks.map((task) => (
                             <li key={task.id} className="flex justify-between my-4">
-                                <span>{task.text}</span>
+                                <span className="line-through">{task.text}</span>
                                 <button
                                     onClick={() => onRestore(task.id)}
                                     className="text-stone-700 hover:text-red-500"
