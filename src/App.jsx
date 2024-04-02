@@ -1,8 +1,9 @@
 import ProjectsSideBar from "./components/ProjectsSideBar";
 import NewProject from "./components/NewProject";
 import NoProjectSelected from "./components/NoProjectSelected";
-import { useState } from "react";
+import {useState, useEffect} from "react";
 import SelectedProject from "./components/SelectedProject";
+import {storeData, getData} from "./components/Storage";
 
 function App() {
   const [projectsState, setProjectsState] = useState({
@@ -13,6 +14,25 @@ function App() {
   });
   const [taskState, setTaskState] = useState(false);
 
+  useEffect(() => {
+    const loadProjects = async () => {
+      const storedProjects = await getData('projects');
+      if (storedProjects !== null) {
+        setProjectsState(prevState => ({...prevState, projects: JSON.parse(storedProjects)}));
+      }
+    };
+
+    const loadTasks = async () => {
+      const storedTasks = await getData('tasks');
+      if (storedTasks !== null) {
+        setProjectsState(prevState => ({...prevState, tasks: JSON.parse(storedTasks)}));
+      }
+    };
+
+    loadProjects();
+    loadTasks();
+  }, []);
+
   function handleAddTask(text) {
     setProjectsState((prevState) => {
       const taskId = Math.random();
@@ -21,6 +41,7 @@ function App() {
         projectId: prevState.selectedProjectId,
         id: taskId,
       };
+      storeData('tasks', JSON.stringify([newTask, ...prevState.tasks]));
       return {
         ...prevState,
         tasks: [newTask, ...prevState.tasks],
@@ -35,6 +56,7 @@ function App() {
         return prevState;
       }
 
+      storeData('tasks', JSON.stringify(prevState.tasks.filter((task) => task.id !== id)));
       setTaskState(!taskState);
       return {
         ...prevState,
@@ -93,6 +115,7 @@ function App() {
         ...projectData,
         id: projectId,
       };
+      storeData('projects', JSON.stringify([...prevprojectsState.projects, newProject])); // stocker les projets mis à jour
       return {
         ...prevprojectsState,
         selectedProjectId: undefined,
@@ -103,6 +126,9 @@ function App() {
 
   function handleDeleteProject() {
     setProjectsState((prevprojectsState) => {
+      storeData('projects', JSON.stringify(prevprojectsState.projects.filter(
+        (project) => project.id !== prevprojectsState.selectedProjectId,
+      )));
       return {
         ...prevprojectsState,
         selectedProjectId: undefined,
@@ -132,10 +158,10 @@ function App() {
 
   if (projectsState.selectedProjectId === null) {
     content = (
-      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} />
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>
     );
   } else if (projectsState.selectedProjectId === undefined) {
-    content = <NoProjectSelected OnStartAddProject={handleStartAddProject} />;
+    content = <NoProjectSelected OnStartAddProject={handleStartAddProject}/>;
   }
   return (
     <main className="h-screen my-8 flex gap-8">
