@@ -24,6 +24,7 @@ function App() {
 
     const loadTasks = async () => {
       const storedTasks = await getData('tasks');
+      console.log(storedTasks);
       if (storedTasks !== null) {
         setProjectsState(prevState => ({...prevState, tasks: JSON.parse(storedTasks)}));
       }
