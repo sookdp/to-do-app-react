@@ -100,12 +100,13 @@ function App() {
       onAddTask={handleAddTask}
       onDeleteTask={handleDeleteTask}
       tasks={projectsState.tasks}
+      backgroundImage={selectedProject ? selectedProject.backgroundImage : null}
     />
   );
 
   if (projectsState.selectedProjectId === null) {
     content = (
-      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} />
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} backgroundImage={selectedProject ? selectedProject.backgroundImage : null} />
     );
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected OnStartAddProject={handleStartAddProject} />;

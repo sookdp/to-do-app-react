@@ -1,17 +1,21 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Input from "./Input";
 import Modal from "./Modal";
+import addImage from "/src/assets/add-image.png";
 
 export default function NewProject({ onAdd, onCancel }) {
   const modal = useRef();
   const title = useRef();
   const description = useRef();
   const dueDate = useRef();
+  const imageInput = useRef(null);
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   function handleSave() {
     const enteredTitle = title.current.value;
     const enteredDescription = description.current.value;
     const enteredDueDate = dueDate.current.value;
+    const selectedImage = backgroundImage;
 
     // validation
     if (
@@ -34,7 +38,22 @@ export default function NewProject({ onAdd, onCancel }) {
       title: enteredTitle,
       description: enteredDescription,
       dueDate: enteredDueDate,
+      backgroundImage: selectedImage,
     });
+  }
+
+  function handleImageChange(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      setBackgroundImage(reader.result);
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+    console.log(backgroundImage);
   }
   return (
     <>
@@ -49,7 +68,7 @@ export default function NewProject({ onAdd, onCancel }) {
           Please make sure you provide a valid value for every input field
         </p>
       </Modal>
-      <div className="w-[35rem] mt-16">
+      <div className="w-[35rem] mt-16 pr-6">
         <menu className="flex items-center justify-end gap-4 my-4">
           <li>
             <button
@@ -69,9 +88,20 @@ export default function NewProject({ onAdd, onCancel }) {
           </li>
         </menu>
         <div>
-          <Input type="text" ref={title} label="Title" />
-          <Input ref={description} label="Description" textarea />
-          <Input type="date" ref={dueDate} label="Due Date" />
+          <Input type="text" ref={title} label="Title"/>
+          <Input ref={description} label="Description" textarea/>
+          <Input type="date" ref={dueDate} label="Due Date"/>
+          <Input
+              label="Projet's Background Image"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={imageInput}
+              style={{display: "none"}}
+          />
+          <button onClick={() => imageInput.current.click()}>
+            <img src={addImage} alt="Add Image icon" className="w-8 h-8"/>
+          </button>
         </div>
       </div>
     </>
