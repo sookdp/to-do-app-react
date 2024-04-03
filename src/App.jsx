@@ -24,7 +24,6 @@ function App() {
 
     const loadTasks = async () => {
       const storedTasks = await getData('tasks');
-      console.log(storedTasks);
       if (storedTasks !== null) {
         setProjectsState(prevState => ({...prevState, tasks: JSON.parse(storedTasks)}));
       }
@@ -175,23 +174,24 @@ function App() {
   );
 
   let content = (
-      <SelectedProject
-          project={selectedProject}
-          onDelete={handleDeleteProject}
-          onAddTask={handleAddTask}
-          onDeleteTask={handleDeleteTask}
-          onRestoreTask={handleRestoreTask}
-          tasks={projectsState.tasks}
-          accomplishTasks={projectsState.accomplishTasks}
-          moveUp={moveUp}
-          moveDown={moveDown}
-      />
+    <SelectedProject
+      project={selectedProject}
+      onDelete={handleDeleteProject}
+      onAddTask={handleAddTask}
+      onDeleteTask={handleDeleteTask}
+      tasks={projectsState.tasks}
+      onRestoreTask={handleRestoreTask}
+      backgroundImage={selectedProject ? selectedProject.backgroundImage : null}
+      accomplishTasks={projectsState.accomplishTasks}
+      moveUp={moveUp}
+      moveDown={moveDown}
+    />
   );
 
 
   if (projectsState.selectedProjectId === null) {
     content = (
-      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} backgroundImage={selectedProject ? selectedProject.backgroundImage : null} />
     );
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected OnStartAddProject={handleStartAddProject}/>;
