@@ -1,15 +1,14 @@
 import ProjectsSideBar from "./components/ProjectsSideBar";
 import NewProject from "./components/NewProject";
+import Project from "./components/Project";
 import NoProjectSelected from "./components/NoProjectSelected";
 import {useState, useEffect} from "react";
-import SelectedProject from "./components/SelectedProject";
 import {storeData, getData} from "./components/Storage";
 
 function App() {
   const [projectsState, setProjectsState] = useState({
-    selectedProject: undefined,
+    selectedProjectId: undefined,
     projects: [],
-    tasks: [],
   });
 
   useEffect(() => {
@@ -20,41 +19,11 @@ function App() {
       }
     };
 
-    const loadTasks = async () => {
-      const storedTasks = await getData('tasks');
-      if (storedTasks !== null) {
-        setProjectsState(prevState => ({...prevState, tasks: JSON.parse(storedTasks)}));
-      }
-    };
-
     loadProjects();
-    loadTasks();
   }, []);
 
-  function handleAddTask(text) {
-    setProjectsState((prevState) => {
-      const taskId = Math.random();
-      const newTask = {
-        text: text,
-        projectId: prevState.selectedProjectId,
-        id: taskId,
-      };
-      storeData('tasks', JSON.stringify([newTask, ...prevState.tasks]));
-      return {
-        ...prevState,
-        tasks: [newTask, ...prevState.tasks],
-      };
-    });
-  }
-
-  function handleDeleteTask(id) {
-    setProjectsState((prevState) => {
-      storeData('tasks', JSON.stringify(prevState.tasks.filter((task) => task.id !== id)));
-      return {
-        ...prevState,
-        tasks: prevState.tasks.filter((task) => task.id !== id),
-      };
-    });
+  function handleUpdate(project) {
+    // Save the new project into projects
   }
 
   function handleSelectProject(id) {
@@ -100,17 +69,16 @@ function App() {
     });
   }
 
-  function handleDeleteProject() {
+  function handleDeleteProject(projectId) {
     setProjectsState((prevprojectsState) => {
-      storeData('projects', JSON.stringify(prevprojectsState.projects.filter(
-        (project) => project.id !== prevprojectsState.selectedProjectId,
-      )));
+      const updatedProjects = prevprojectsState.projects.filter(
+        (project) => project.id !== projectId,
+      );
+      storeData('projects', JSON.stringify(updatedProjects));
       return {
         ...prevprojectsState,
         selectedProjectId: undefined,
-        projects: prevprojectsState.projects.filter(
-          (project) => project.id !== prevprojectsState.selectedProjectId,
-        ),
+        projects: updatedProjects,
       };
     });
   }
@@ -119,13 +87,15 @@ function App() {
     (project) => project.id === projectsState.selectedProjectId,
   );
 
+/////////////////////////////
+// Affichage de la page
+/////////////////////////////
+
   let content = (
-    <SelectedProject
+    <Project
       project={selectedProject}
-      onDelete={handleDeleteProject}
-      onAddTask={handleAddTask}
-      onDeleteTask={handleDeleteTask}
-      tasks={projectsState.tasks}
+      deleteProject={handleDeleteProject}
+      update={handleUpdate}
     />
   );
 

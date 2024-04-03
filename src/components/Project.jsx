@@ -1,17 +1,33 @@
+import {useState} from "react";
 import Tasks from "./Tasks";
 
-export default function SelectedProject({
-  project,
-  onDelete,
-  onAddTask,
-  onDeleteTask,
-  tasks,
-}) {
+export default function Project({project, deleteProject, update}) {
+  const [tasks, setTasks] = useState(project.tasks || []);
+
+  const handleAddTask = (text) => {
+    const taskId = Math.random();
+    const newTask = {
+      text: text,
+      projectId: project.id,
+      id: taskId,
+    };
+    const updatedTasks = [newTask, ...tasks];
+    setTasks(updatedTasks);
+    update();
+  };
+
+  const handleDeleteTask = (id) => {
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(updatedTasks);
+    update();
+  };
+
   const formattedDate = new Date(project.dueDate).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
+
   return (
     <div className="w-[35rem] mt-16">
       <header className="pb-4 mb-4 border-b-2 border-stone-300">
@@ -21,7 +37,7 @@ export default function SelectedProject({
           </h1>
           <button
             className="text-stone-600 hover:text-stone-950"
-            onClick={onDelete}
+            onClick={() => deleteProject(project.id)}
           >
             Delete
           </button>
@@ -31,7 +47,7 @@ export default function SelectedProject({
           {project.description}
         </p>
       </header>
-      <Tasks onAdd={onAddTask} onDelete={onDeleteTask} tasks={tasks} />
+      <Tasks onAdd={handleAddTask} onDelete={handleDeleteTask} tasks={tasks}/>
     </div>
   );
 }
