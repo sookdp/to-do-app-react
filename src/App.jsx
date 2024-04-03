@@ -9,7 +9,9 @@ function App() {
   const [projectsState, setProjectsState] = useState({
     selectedProjectId: undefined,
     projects: [],
+    accomplishTasks:[],
   });
+  const [taskState, setTaskState] = useState(false);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -24,6 +26,21 @@ function App() {
 
   function handleUpdate(project) {
     // Save the new project into projects
+  }
+
+  function handleRestoreTask(id) {
+    setProjectsState((prevState) => {
+      const taskToRestore = prevState.accomplishTasks.find((task) => task.id === id);
+      if (!taskToRestore) {
+        return prevState;
+      }
+
+      return {
+        ...prevState,
+        tasks: [...prevState.tasks, taskToRestore],
+        accomplishTasks: prevState.accomplishTasks.filter((task) => task.id !== id),
+      };
+    });
   }
 
   function handleSelectProject(id) {
@@ -83,6 +100,36 @@ function App() {
     });
   }
 
+  function moveUp(id) {
+    const index = projectsState.tasks.findIndex(task => task.id === id);
+    if (index === -1 || index === 0) return;
+
+    const updatedTasks = [...projectsState.tasks];
+    const temp = updatedTasks[index];
+    updatedTasks[index] = updatedTasks[index - 1];
+    updatedTasks[index - 1] = temp;
+
+    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
+
+    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+  }
+
+  function moveDown(id) {
+    const index = projectsState.tasks.findIndex(task => task.id === id);
+    if (index === -1 || index === projectsState.tasks.length - 1) return;
+
+    const updatedTasks = [...projectsState.tasks];
+    const temp = updatedTasks[index];
+    updatedTasks[index] = updatedTasks[index + 1];
+    updatedTasks[index + 1] = temp;
+
+    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
+
+    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+  }
+
+
+
   const selectedProject = projectsState.projects.find(
     (project) => project.id === projectsState.selectedProjectId,
   );
@@ -96,12 +143,18 @@ function App() {
       project={selectedProject}
       deleteProject={handleDeleteProject}
       update={handleUpdate}
+      onRestoreTask={handleRestoreTask}
+      backgroundImage={selectedProject ? selectedProject.backgroundImage : null}
+      accomplishTasks={projectsState.accomplishTasks}
+      moveUp={moveUp}
+      moveDown={moveDown}
     />
   );
 
+
   if (projectsState.selectedProjectId === null) {
     content = (
-      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject}/>
+      <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} backgroundImage={selectedProject ? selectedProject.backgroundImage : null} />
     );
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected OnStartAddProject={handleStartAddProject}/>;
