@@ -14,23 +14,29 @@ export default function Tasks({ tasks, onAdd, onDelete, moveUp, moveDown}) {
         </p>
       )}
       {tasks.length > 0 && (
-        <ul className="p-4 mt-8 rounded-md bg-stone-100">
-            {tasks.map((task) => (
-                <li key={task.id} className="flex justify-between my-4">
-                    <div className="flex items-center space-x-2">
-                        <img src={upArrow} className="w-6 h-6 cursor-pointer" onClick={() => moveUp(task.id)}/>
-                        <img src={downArrow} className="w-6 h-6 cursor-pointer" onClick={() => moveDown(task.id)}/>
-                    </div>
-                    <span>{task.text}</span>
-                  <button
-                      onClick={() => onDelete(task.id)}
-                      className="text-stone-700 hover:text-red-500"
-                  >
-                      Clear
-                  </button>
-              </li>
-          ))}
-        </ul>
+          <ul className="p-4 mt-8 rounded-md bg-stone-100">
+              {tasks.map((task) => (
+                  <li key={task.id} className="flex items-center my-4">
+                      <div className="flex items-center space-x-1">
+                          <img src={upArrow} className="w-3 h-3 cursor-pointer mt-1" onClick={() => moveUp(task.id)}/>
+                          <img src={downArrow} className="w-3 h-3 cursor-pointer mt-1 mr-1"
+                               onClick={() => moveDown(task.id)}/>
+                      </div>
+                      <div className="flex items-center justify-between w-full ml-2">
+                          <span>{task.text}</span>
+                          <button
+                              onClick={() => onDelete(task.id)}
+                              className="text-stone-700 hover:text-red-500"
+                          >
+                              Clear
+                          </button>
+                      </div>
+
+
+                  </li>
+              ))}
+          </ul>
+
       )}
     </section>
   );
