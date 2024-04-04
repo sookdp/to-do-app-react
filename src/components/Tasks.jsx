@@ -1,13 +1,27 @@
 import { list } from "postcss";
 import NewTask from "./NewTask";
-import downArrow from "../assets/downArrow.png"
-import upArrow from "../assets/upArrow.png"
+import downArrow from "../assets/downArrow.png";
+import upArrow from "../assets/upArrow.png";
+import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 export default function Tasks({ tasks, onAdd, onDelete, moveUp, moveDown}) {
+    const [filteredTasks, setFilteredTasks] = useState(tasks);
+
+    const handleSearch = (searchText) => {
+        const filtered = tasks.filter(task =>
+            task.text.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setFilteredTasks(filtered);
+    };
   return (
     <section>
       <h2 className="text-2xl font-bold text-stone-700 mb-4">Tasks</h2>
       <NewTask onAdd={onAdd} />
+        <SearchBar onSearch={handleSearch} />
+        {filteredTasks.length === 0 && (
+            <p className="text-stone-800 my-4">This project does not have any task</p>
+        )}
       {tasks.length === 0 && (
         <p className="text-stone-800 my-4">
           This project does not have any task
