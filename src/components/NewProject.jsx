@@ -53,7 +53,6 @@ export default function NewProject({ onAdd, onCancel }) {
     if (file) {
       reader.readAsDataURL(file);
     }
-    console.log(backgroundImage);
   }
   return (
     <>

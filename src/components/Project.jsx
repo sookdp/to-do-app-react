@@ -1,7 +1,6 @@
 import {useState} from "react";
 import Tasks from "./Tasks";
 import History from "./History";
-import {storeData} from "./Storage";
 
 export default function Project({
                                   project,
@@ -10,9 +9,8 @@ export default function Project({
                                 }) {
   const [tasks, setTasks] = useState(project.tasks || []);
   const [accomplishTasks, setAccomplishTasks] = useState(project.accomplishTasks || []);
-  const [background, setBackground] = useState(project.background || null);
 
-  const handleAddTask = (text) => {
+  function handleAddTask(text) {
     const taskId = Math.random();
     const newTask = {
       text: text,
@@ -21,8 +19,10 @@ export default function Project({
     };
     const updatedTasks = [newTask, ...tasks];
     setTasks(updatedTasks);
-    update();
-  };
+
+    const updatedProject = {...project, tasks: updatedTasks};
+    update(updatedProject);
+  }
 
   function handleRestoreTask(id) {
     setProjectsState((prevState) => {
@@ -42,35 +42,33 @@ export default function Project({
   const handleDeleteTask = (id) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
     setTasks(updatedTasks);
-    update();
+    update(project);
   };
 
   function moveUp(id) {
-    const index = projectsState.tasks.findIndex(task => task.id === id);
+    const index = tasks.findIndex(task => task.id === id);
     if (index === -1 || index === 0) return;
 
-    const updatedTasks = [...projectsState.tasks];
+    const updatedTasks = [...tasks];
     const temp = updatedTasks[index];
     updatedTasks[index] = updatedTasks[index - 1];
     updatedTasks[index - 1] = temp;
 
-    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
-
-    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+    setTasks(updatedTasks);
+    update(project);
   }
 
   function moveDown(id) {
-    const index = projectsState.tasks.findIndex(task => task.id === id);
-    if (index === -1 || index === projectsState.tasks.length - 1) return;
+    const index = tasks.findIndex(task => task.id === id);
+    if (index === -1 || index === tasks.length - 1) return;
 
-    const updatedTasks = [...projectsState.tasks];
+    const updatedTasks = [...tasks];
     const temp = updatedTasks[index];
     updatedTasks[index] = updatedTasks[index + 1];
     updatedTasks[index + 1] = temp;
 
-    storeData('tasks', JSON.stringify(updatedTasks)); // Mettre à jour le localStorage
-
-    setProjectsState(prevState => ({ ...prevState, tasks: updatedTasks }));
+    setTasks(updatedTasks);
+    update(project);
   }
 
   const formattedDate = new Date(project.dueDate).toLocaleDateString("fr-FR", {
@@ -91,7 +89,7 @@ export default function Project({
     left: 0,
     width: '100%',
     height: '100%',
-    // backgroundImage: `url(${backgroundImage})`,
+    backgroundImage: `url(${project.backgroundImage})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -120,7 +118,7 @@ export default function Project({
           {project.description}
         </p>
       </header>
-      <Tasks onAdd={handleAddTask} onDelete={handleDeleteTask} tasks={tasks}/>
+      <Tasks onAdd={handleAddTask} onDelete={handleDeleteTask} tasks={tasks} moveUp={moveUp} moveDown={moveDown}/>
       <History accomplishTasks={accomplishTasks} onRestore={handleRestoreTask}/>
     </div>
   );

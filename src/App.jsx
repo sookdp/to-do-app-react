@@ -24,9 +24,24 @@ function App() {
     loadProjects();
   }, []);
 
-  function handleUpdate(project) {
-    // Save the new project into projects
-  }
+  function handleUpdate(updatedProject) {
+  setProjectsState((prevprojectsState) => {
+    const updatedProjects = prevprojectsState.projects.map((project) => {
+      if (project.id === updatedProject.id) {
+        return updatedProject;
+      } else {
+        return project;
+      }
+    });
+
+    storeData('projects', JSON.stringify(updatedProjects));
+
+    return {
+      ...prevprojectsState,
+      projects: updatedProjects,
+    };
+  });
+}
 
 
 
@@ -107,7 +122,6 @@ function App() {
   if (projectsState.selectedProjectId === null) {
     content = (
       <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} backgroundImage={selectedProject ? selectedProject.backgroundImage : null} />
-      // <NewProject onAdd={handleAddProject} onCancel={handleCancelAddProject} />
   );
   } else if (projectsState.selectedProjectId === undefined) {
     content = <NoProjectSelected OnStartAddProject={handleStartAddProject}/>;
