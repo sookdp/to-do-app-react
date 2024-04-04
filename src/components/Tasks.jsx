@@ -20,7 +20,7 @@ export default function Tasks({ tasks, onAdd, onDelete, moveUp, moveDown}) {
       <NewTask onAdd={onAdd} />
         <SearchBar onSearch={handleSearch} />
         {filteredTasks.length === 0 && (
-            <p className="text-stone-800 my-4">This project does not have any task</p>
+            <p className="text-stone-800 my-4">This task does not exist....</p>
         )}
       {tasks.length === 0 && (
         <p className="text-stone-800 my-4">
